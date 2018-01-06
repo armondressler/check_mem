@@ -1,6 +1,6 @@
 # check_mem
 # check_mem: Nagios plugin to check available memory
-> obviously
+> _obviously_
 
 The default nagios-plugins-all package doesnt seem to contain a suitable binary,
 that's why this one exists now.
@@ -30,7 +30,7 @@ as well as the absolute memory used in MB. The performance data is appended to t
 
 
 
-### --warning
+### -w / --warning
 Type: `Integer`  
 Default: 80
 
@@ -38,7 +38,7 @@ Range to trigger a warning, "80" will set the warning range from 80-100.
 "80:" will set the warning range to 0-80.
 
 
-### --critical
+### -c / --critical
 Type: `Integer`  
 Default: 90
 
