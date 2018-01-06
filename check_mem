@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+import argparse
+
+try:
+    from psutil import virtual_memory
+except ImportError:
+    raise ImportError("Make sure to install the psutil python module")
+
+try:
+    import nagiosplugin as nag
+except ImportError:
+    raise ImportError("Make sure to install the nagiosplugin python module")
+
+
+class CheckMemory(nag.Resource):
+
+    def __init__(self,
+                 warning=80,
+                 critical=90):
+        self.warning = warning
+        self.critical = critical
+        self.current_memory = virtual_memory()
+
+    def get_memory(self, mode):
+        """
+        :param mode:
+        :type mode: str
+        :return:
+        :rtype: dict
+        """
+        metric_dict = dict(value=None, name=None, uom=None, min=0, max=None)
+        if mode == "pct":
+            metric_dict["name"] = "available_memory_pct"
+            metric_dict["value"] = self.current_memory.percent
+            metric_dict["uom"] = "%"
+            metric_dict["max"] = 100
+        elif mode == "absolute":
+            metric_dict["name"] = "available_memory_absolute"
+            metric_dict["value"] = round(self.current_memory.used / 1024 ** 2, 1)
+            metric_dict["uom"] = "MB"
+
+        return metric_dict
+
+    def probe(self):
+        """
+        :rtype: nagiosplugin.Metric
+        """
+        for mode in ("pct", "absolute"):
+            metric_dict = self.get_memory(mode)
+            yield nag.Metric(metric_dict["name"],
+                             metric_dict["value"],
+                             uom=metric_dict["uom"],
+                             min=metric_dict["min"],
+                             max=metric_dict["max"],
+                             context=metric_dict["name"])
+
+
+class CheckMemorySummary(nag.Summary):
+
+    def ok(self, results):
+        """
+        :param results:
+        :type results:
+        :return:
+        :rtype: str
+        """
+        return " ".join([str(result) for result in results.results])
+
+    def problem(self, results):
+        """
+        :param results:
+        :type results:
+        :return:
+        :rtype: str
+        """
+        return " ".join([str(result) for result in results.results])
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('-w', '--warning', metavar='RANGE', default=None, type=int, choices=range(0,100),
+                        help='return warning if available memory is outside RANGE,\
+                            RANGE is defined as an number or an interval, e.g. 5:25 or :30  or 95:')
+    parser.add_argument('-c', '--critical', metavar='RANGE', default=None, type=int, choices=range(0,100),
+                        help='return critical if available memory is outside RANGE,\
+                            RANGE is defined as an number or an interval, e.g. 5:25 or :30  or 95:')
+
+    return parser.parse_args()
+
+
+@nag.guarded
+def main():
+    args = parse_arguments()
+    check = nag.Check(CheckMemory(warning=args.warning,
+                                  critical=args.critical),
+                      nag.ScalarContext('available_memory_pct',
+                                        fmt_metric="{valueunit}",
+                                        warning=args.warning,
+                                        critical=args.critical),
+                      nag.ScalarContext('available_memory_absolute',
+                                        fmt_metric="equalling {valueunit} of total memory used."),
+                      CheckMemorySummary()
+                      )
+
+    check.main()
+
+
+if __name__ == '__main__':
+    main()

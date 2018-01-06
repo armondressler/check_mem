@@ -1,0 +1,17 @@
+object CheckCommand "mem" {
+
+        command = [ PluginContribDir + "/check_mem" ]
+
+        arguments = {
+                "-c" = {
+                        value = "$check_mem_critical$"
+                        description = "critical threshold for check"
+                }
+                "-w" = {
+                        value = "$check_mem_warning$"
+                        description = "warning threshold for check"
+                }
+        }
+        vars.check_mem_warning = 85
+        vars.check_mem_critical = 95
+}
