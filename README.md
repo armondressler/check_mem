@@ -25,7 +25,9 @@ It returns with either 0 (OK), 1 (WARNING), 2 (CRITICAL) or 3 (UNKNOWN).
 The info message prints the percentage of total memory in use, 
 as well as the absolute memory used in MB. The performance data is appended to the message:
 
-    OK - 80.5% equalling 2975MB of total memory used. | available_memory_absolute=2974.7MB available_memory_pct=80.5%
+    ./check_mem --warning 80 --critical 90
+    CHECKMEMORY WARNING - 81.5% (outside range 0:80) equalling 3049MB of total memory used. | available_memory_absolute=3049.1MB;;;0 available_memory_pct=81.5%;80;90;0;100
+
 
 
 ### --warning
