@@ -45,12 +45,12 @@ class CheckMemory(nag.Resource):
         """
         metric_dict = dict(value=None, name=None, uom=None, min=0, max=None)
         if mode == "pct":
-            metric_dict["name"] = "available_memory_pct"
+            metric_dict["name"] = "used_memory_pct"
             metric_dict["value"] = 100 - self._get_percentage(self.available_memory, self.virtual_memory.total)
             metric_dict["uom"] = "%"
             metric_dict["max"] = 100
         elif mode == "absolute":
-            metric_dict["name"] = "available_memory_absolute"
+            metric_dict["name"] = "used_memory_absolute"
             metric_dict["value"] = round((self.virtual_memory.total - self.available_memory) / 1024 ** 2, 1)
             metric_dict["uom"] = "MB"
 
@@ -108,11 +108,11 @@ def main():
     args = parse_arguments()
     check = nag.Check(CheckMemory(warning=args.warning,
                                   critical=args.critical),
-                      nag.ScalarContext('available_memory_pct',
+                      nag.ScalarContext('used_memory_pct',
                                         fmt_metric="{valueunit}",
                                         warning=args.warning,
                                         critical=args.critical),
-                      nag.ScalarContext('available_memory_absolute',
+                      nag.ScalarContext('used_memory_absolute',
                                         fmt_metric="({value:.0f}{uom}) of total memory used."),
                       CheckMemorySummary()
                       )
