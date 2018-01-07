@@ -94,11 +94,11 @@ class CheckMemorySummary(nag.Summary):
 def parse_arguments():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-w', '--warning', metavar='RANGE', default=None, type=int, choices=range(0,100),
-                        help='return warning if available memory is outside RANGE,\
-                            RANGE is defined as an number or an interval, e.g. 5:25 or :30  or 95:')
+                        help='return warning if used memory is above RANGE,\
+                            RANGE is defined as an number or an interval, e.g. 70 for values (70-100)')
     parser.add_argument('-c', '--critical', metavar='RANGE', default=None, type=int, choices=range(0,100),
-                        help='return critical if available memory is outside RANGE,\
-                            RANGE is defined as an number or an interval, e.g. 5:25 or :30  or 95:')
+                        help='return critical if used memory is above RANGE,\
+                            RANGE is defined as an number or an interval, e.g. 70 for values (70-100)')
 
     return parser.parse_args()
 
