@@ -19,7 +19,7 @@ class CheckMemory(nag.Resource):
                  critical=90):
         self.warning = warning
         self.critical = critical
-        self.current_memory = virtual_memory()
+        self.virtual_memory = virtual_memory()
         self.available_memory = sum([self.virtual_memory.__getattribute__(value)
                                      for value in ("cached", "free", "buffers")])
 
