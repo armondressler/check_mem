@@ -98,7 +98,7 @@ def main():
                                         warning=args.warning,
                                         critical=args.critical),
                       nag.ScalarContext('available_memory_absolute',
-                                        fmt_metric="equalling {valueunit} of total memory used."),
+                                        fmt_metric="({valueunit}) of total memory used."),
                       CheckMemorySummary()
                       )
 
