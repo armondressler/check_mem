@@ -23,7 +23,7 @@ The check_mem_icinga2_command file contains a definition for an icinga2 CheckCom
 The plugin is written according to the nagios plugin developer guidelines (https://nagios-plugins.org/doc/guidelines.html).
 It returns with either 0 (OK), 1 (WARNING), 2 (CRITICAL) or 3 (UNKNOWN).
 The info message prints the percentage of total memory in use, 
-as well as the absolute memory used in MB. The performance data is appended to the message:
+as well as the absolute memory used in MB. The used memory is calulated as follows: total - (free + cached + buffered) . The performance data is appended to the message:
 
     ./check_mem --warning 80 --critical 90
     CHECKMEMORY WARNING - 81.5% (outside range 0:80) equalling 3049MB of total memory used. | available_memory_absolute=3049.1MB;;;0 available_memory_pct=81.5%;80;90;0;100
